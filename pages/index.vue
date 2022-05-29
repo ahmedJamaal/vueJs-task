@@ -145,7 +145,7 @@ export default {
         hr = hr - 1
         min = min + 60
       }
-      return `${this.FormatNumber(hr)}:${this.FormatNumber(min)}`
+      return `${hr}:${min*100 / 60}`
     },
   },
   methods: {
@@ -170,11 +170,9 @@ export default {
       }
 
       // eslint-disable-next-line no-console
-      this.timeSheet[index].compensation = `${this.FormatNumber(
-        hour
-      )}:${this.FormatNumber(min)}`
+      this.timeSheet[index].compensation = `${hour}.${min*100 / 60}`
       // this.timeSheet[index].plan = `${this.FormatNumber(hour)}:${this.FormatNumber(min)}`
-      return `${this.FormatNumber(hour)}:${this.FormatNumber(min)}`
+      return `${hour}.${min*100 / 60}`
     },
     calculateCompensation(item) {
       if (item.status === 'holiday') {
