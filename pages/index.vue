@@ -121,7 +121,7 @@ export default {
           status: 'work',
           compensation: 0,
           plan: 8,
-        }
+        },
       ],
     }
   },
@@ -132,15 +132,16 @@ export default {
     },
     TotalCompensation() {
       // eslint-disable-next-line no-var
-    return this.timeSheet.reduce((a, b) => parseFloat(a) + (parseFloat(b.compensation) || 0), 0)
-
-
+      return this.timeSheet.reduce(
+        (a, b) => parseFloat(a) + (parseFloat(b.compensation) || 0),
+        0
+      )
     },
   },
   methods: {
     getPlan(val, index) {
       // eslint-disable-next-line no-console
-     if (val.status === 'work') {
+      if (val.status === 'work') {
         // this.timeSheet[index].plan = val.plan
         return val.plan
       } else {
@@ -154,32 +155,42 @@ export default {
 
       // eslint-disable-next-line prefer-const
       let { hour, min } = time
-      console.log(time);
-/*
+      console.log(time)
+
+      // if min is negtive
       if (time.min < 0) {
-        hour = time.hour - 1
-        min = time.min + 60
-      }
-     */
-    // if min negitive sign
-     if (time.min < 0) {
-       if(time.min % 60 === 0){
-         hour = time.hour + time.min / 60;
-        min=0;
-       }else if( time.hour ===0 ){
-         hour = '-0';
-        min=Math.abs(time.min);
-       }else{
+        // if hour is negtive
+        if (time.hour < 0) {
+          min = Math.abs(time.min)
+        } // hour is equal zero
+        else if (time.hour === 0) {
+          hour = '-0'
+          min = Math.abs(time.min)
+        } // hour is posstive
+        else {
+          min = 60 + time.min
+          hour = time.hour - 1;
+          // eslint-disable-next-line no-unused-expressions
+          hour === 0 ? '-0': hour
+        }
+      } // if minutes is postive
+      else if(time.min > 0 ) {
+        // if hour is negtive
+        // eslint-disable-next-line no-lonely-if
+        if (time.hour < 0) {
+          hour = time.hour + 1;
+        } // if hour is postive
+        else if (time.hour > 0) {
           hour = time.hour;
-           min=Math.abs(time.min);
-       }
+          min = time.min;
+        }
 
       }
       // eslint-disable-next-line no-console
-      this.timeSheet[index].compensation = `${hour}.${min*100 / 60}`
+      this.timeSheet[index].compensation = `${hour}.${(min * 100) / 60}`
       // this.timeSheet[index].plan = `${this.FormatNumber(hour)}:${this.FormatNumber(min)}`
-      console.log(`${hour}.${min*100 / 60}`)
-      return `${hour}.${min*100 / 60}`
+      console.log(`${hour}.${(min * 100) / 60}`)
+      return `${hour}.${(min * 100) / 60}`
     },
     calculateCompensation(item) {
       if (item.status === 'holiday') {
@@ -196,7 +207,6 @@ export default {
         return { hour: hour, min: min }
       }
     },
-
     FormatNumber(j) {
       return ('0' + j).slice(-2)
     },
