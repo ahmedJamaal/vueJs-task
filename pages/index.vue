@@ -17,7 +17,7 @@
           </div>
         </v-card-title>
         <v-simple-table>
-          <template v-slot:default>
+          <template #default>
             <thead>
               <tr>
                 <th>Date</th>
@@ -115,13 +115,13 @@ export default {
         {
           date: '28/04',
           weekDay: 'Saturday',
-          in: '08:00',
-          out: '17:00',
-          lunch: '00:30',
+          in: '09:30',
+          out: '18:00',
+          lunch: '01:00',
           status: 'work',
           compensation: 0,
           plan: 8,
-        },
+        }
       ],
     }
   },
@@ -132,30 +132,19 @@ export default {
     },
     TotalCompensation() {
       // eslint-disable-next-line no-var
-      var array = []
-      this.timeSheet.forEach((element) => {
-        array.push(this.calculateCompensation(element))
-      })
-      // eslint-disable-next-line dot-notation
-      let min = array.reduce((a, b) => a + (b['min'] || 0), 0)
-      // eslint-disable-next-line dot-notation
-      let hr = array.reduce((a, b) => a + (b['hour'] || 0), 0)
+    return this.timeSheet.reduce((a, b) => parseFloat(a) + (parseFloat(b.compensation) || 0), 0)
 
-      if (min < 0) {
-        hr = hr - 1
-        min = min + 60
-      }
-      return `${hr}:${min*100 / 60}`
+
     },
   },
   methods: {
     getPlan(val, index) {
       // eslint-disable-next-line no-console
-      if (val.status === 'work') {
-        this.timeSheet[index].plan = val.plan
+     if (val.status === 'work') {
+        // this.timeSheet[index].plan = val.plan
         return val.plan
       } else {
-        this.timeSheet[index].plan = 0
+        // this.timeSheet[index].plan = 0
         return 0
       }
     },
@@ -163,15 +152,33 @@ export default {
       // eslint-disable-next-line no-console
       const time = this.calculateCompensation(val)
 
+      // eslint-disable-next-line prefer-const
       let { hour, min } = time
+      console.log(time);
+/*
       if (time.min < 0) {
         hour = time.hour - 1
         min = time.min + 60
       }
+     */
+    // if min negitive sign
+     if (time.min < 0) {
+       if(time.min % 60 === 0){
+         hour = time.hour + time.min / 60;
+        min=0;
+       }else if( time.hour ===0 ){
+         hour = '-0';
+        min=Math.abs(time.min);
+       }else{
+          hour = time.hour;
+           min=Math.abs(time.min);
+       }
 
+      }
       // eslint-disable-next-line no-console
       this.timeSheet[index].compensation = `${hour}.${min*100 / 60}`
       // this.timeSheet[index].plan = `${this.FormatNumber(hour)}:${this.FormatNumber(min)}`
+      console.log(`${hour}.${min*100 / 60}`)
       return `${hour}.${min*100 / 60}`
     },
     calculateCompensation(item) {
